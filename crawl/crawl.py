@@ -4,6 +4,7 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
+import traceback
 
 async def getMovieDetailPage(code):
     result = await loop.run_in_executor(None, requests.get,f"https://movie.naver.com/movie/bi/mi/detail.naver?code={code}")
@@ -57,30 +58,42 @@ def parseMyInfo(pageSoup : BeautifulSoup):
     def parseRatings(div : BeautifulSoup):
         key_num = None
         key_rating = None
-        numbers = div.select_one("actualPointCountBasic > em:nth-child(2)").text
-        rating = div.select_one("#actualPointPersentBasic > div:nth-child(1) > span:nth-child(1) > span:nth-child(1)").text.strip().split(" ")[-1][:-1]
-        if("N=a:ifo.mgrating" in div.text): # watched
+
+        if("N=a:ifo.mgrating" in str(div)): # watched
             key_num = "watched_rating_num"
             key_rating = "watched_rating"
-        if("N=a:ifo.crating" in div.text): # commentor
-            key_num = "commentor_rating_num"
+        elif("N=a:ifo.crating" in str(div)): # commentor
+            key_num = "commentor_rating_num" # Not available in this section
             key_rating = "commentor_rating"
-        if("N=a:ifo.arating" in div.text): # netizen
+        elif("N=a:ifo.arating" in str(div)): # netizen
             key_num = "netizen_rating_num"
             key_rating = "netizen_rating"
+        else:
+            return
+
+       
+        em_numbers = div.select_one("div:nth-child(1)> div:nth-child(3) > em:nth-child(2)")
+        if em_numbers:
+            numbers = em_numbers.text
+            ret[key_num] = numbers
+
+
+        div_star_score = div.select_one("div.star_score")
+        ems = div_star_score.find_all('em')
+        rating = ""
+        for em in ems:
+            rating += em.text
         
-        ret[key_num] = numbers
         ret[key_rating] = rating
 
     
     div_main_score = soup_my_info.select_one("div.main_score")
 
-    if div_main_score is not None:
+    if div_main_score :
         div_main_scores = div_main_score.select("div.score")
         for div_score in div_main_scores:
             parseRatings(div_score)
     
-
     return ret
 
 def getDirectors(pageSoup : BeautifulSoup) :
@@ -135,7 +148,7 @@ def crawlOnePage(page : BeautifulSoup):
 
     movie = parseMyInfo(page)
     if(movie is None) :
-            return result
+            return None
     result['mv'] = movie
     result['director'] = getDirectors(page)
     result['actor'] = getActors(page)
@@ -152,7 +165,7 @@ def parseOne(response):
         try:
             result = crawlOnePage(bs)
         except Exception as e:
-            print(e)
+            traceback.print_exc(str(e))
             return None
         return result
 
@@ -179,11 +192,11 @@ async def main():
 
 if __name__ == "__main__":
 
-    
+ 
     loop = asyncio.get_event_loop()         
     ret = loop.run_until_complete(main())          
-    loop.close()                             
-    
+    loop.close()  
+
     print(ret)
     
     
