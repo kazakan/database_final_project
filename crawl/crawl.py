@@ -52,7 +52,35 @@ def parseMyInfo(pageSoup : BeautifulSoup):
     
     for span in dd1_spans:
         parseSpan(span)
+
+    # get ratings
+    def parseRatings(div : BeautifulSoup):
+        key_num = None
+        key_rating = None
+        numbers = div.select_one("actualPointCountBasic > em:nth-child(2)").text
+        rating = div.select_one("#actualPointPersentBasic > div:nth-child(1) > span:nth-child(1) > span:nth-child(1)").text.strip().split(" ")[-1][:-1]
+        if("N=a:ifo.mgrating" in div.text): # watched
+            key_num = "watched_rating_num"
+            key_rating = "watched_rating"
+        if("N=a:ifo.crating" in div.text): # commentor
+            key_num = "commentor_rating_num"
+            key_rating = "commentor_rating"
+        if("N=a:ifo.arating" in div.text): # netizen
+            key_num = "netizen_rating_num"
+            key_rating = "netizen_rating"
         
+        ret[key_num] = numbers
+        ret[key_rating] = rating
+
+    
+    div_main_score = soup_my_info.select_one("div.main_score")
+
+    if div_main_score is not None:
+        div_main_scores = div_main_score.select("div.score")
+        for div_score in div_main_scores:
+            parseRatings(div_score)
+    
+
     return ret
 
 def getDirectors(pageSoup : BeautifulSoup) :
@@ -123,12 +151,13 @@ def parseOne(response):
         result = None
         try:
             result = crawlOnePage(bs)
-        except:
+        except Exception as e:
+            print(e)
             return None
         return result
 
 async def main():
-    codes = range(10000,20000)
+    codes = range(10000,10100)
     begin = time()
     responses_future = [asyncio.ensure_future(getMovieDetailPage(code)) for code in codes]
     responses = await asyncio.gather(*responses_future)
@@ -155,7 +184,7 @@ if __name__ == "__main__":
     ret = loop.run_until_complete(main())          
     loop.close()                             
     
-    #print(ret)
+    print(ret)
     
     
     
