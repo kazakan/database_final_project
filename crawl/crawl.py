@@ -129,11 +129,16 @@ def getActors(pageSoup : BeautifulSoup) :
     div_made_people : BeautifulSoup = pageSoup.select_one(".made_people")
 
     if(div_made_people is None) : return ret # not available
+    
+    li_lst_people : List[BeautifulSoup] = div_made_people.select("li")
 
-    divs_p_info : List[BeautifulSoup] = div_made_people.select(".p_info")
-
-    for p_obj in divs_p_info :
+    for li_obj in li_lst_people :
+        
         data = {}
+
+        p_obj  = li_obj.select_one("div.p_info")
+        if(p_obj is None):
+            return
         p_obj_a = p_obj.select_one("a:nth-child(1)",href=True)
         href = p_obj_a['href']
 
@@ -143,6 +148,11 @@ def getActors(pageSoup : BeautifulSoup) :
         data['ismain'] = p_obj.select_one("div:nth-child(3) > p:nth-child(1) > em:nth-child(1)").text
         span_actor_role = p_obj.select_one("div:nth-child(3) > p:nth-child(2) > span:nth-child(1)")
         data['role'] = span_actor_role.text if span_actor_role else None
+
+        # image
+        img = li_obj.select_one("p:nth-child(1) > a:nth-child(1) > img:nth-child(1)")
+        if img is not None:
+            data['img'] = img['src']
 
         ret.append(data)
 
@@ -192,8 +202,6 @@ async def main():
     end = time()
 
     print('다운 실행 시간: {0:.3f}초'.format(end - begin))
-
-    
 
     begin = time()
     with Pool() as p:
