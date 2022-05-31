@@ -200,6 +200,8 @@ def parseOne(response):
         return result
 
 async def processParseBetweenCode(begin,end):
+    print(f"Code {begin}~{end-1} 작업중...")
+    
     codes = range(begin,end)
     begin = time()
     responses_future = [asyncio.ensure_future(getMovieDirectorActorPage(code)) for code in codes]
@@ -225,10 +227,6 @@ if __name__ == "__main__":
     ret = loop.run_until_complete(processParseBetweenCode(begin,end))          
     loop.close()  
 
-    with open(f'{begin}_{end}.pickle', 'wb') as handle:
+    with open(f'./out/{begin}_{end}_crawled.pickle', 'wb') as handle:
         pickle.dump(ret, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-
-    
-    
-    
