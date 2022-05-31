@@ -6,8 +6,16 @@ from bs4 import BeautifulSoup
 from multiprocessing import Pool
 import traceback
 
-async def getMovieDetailPage(code):
+async def getMovieDirectorActorPage(code):
     result = await loop.run_in_executor(None, requests.get,f"https://movie.naver.com/movie/bi/mi/detail.naver?code={code}")
+    return result
+
+async def getMovieReview(code,pageNum):
+    result = await loop.run_in_executor(
+        None, 
+        requests.get,
+        f"https://movie.naver.com/movie/bi/mi/pointWriteFormList.naver?code={code}&type=after&isActualPointWriteExecute=false&isMileageSubscriptionAlready=false&isMileageSubscriptionReject=false&page={pageNum}"
+    )
     return result
 
 def parseMyInfo(pageSoup : BeautifulSoup):
@@ -179,7 +187,7 @@ def parseOne(response):
 async def main():
     codes = range(10000,10100)
     begin = time()
-    responses_future = [asyncio.ensure_future(getMovieDetailPage(code)) for code in codes]
+    responses_future = [asyncio.ensure_future(getMovieDirectorActorPage(code)) for code in codes]
     responses = await asyncio.gather(*responses_future)
     end = time()
 
