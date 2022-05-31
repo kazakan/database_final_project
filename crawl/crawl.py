@@ -113,6 +113,10 @@ def getDirectors(pageSoup : BeautifulSoup) :
     divs_dir_obj : List[BeautifulSoup] = div_director.select("div.dir_obj")
     for dir_obj in divs_dir_obj :
         data = {}
+
+        img_director = dir_obj.select_one(".thumb_dir > a:nth-child(1) > img:nth-child(1)")
+        if img_director :
+            data['img'] = img_director['src']
         
         dir_obj_a = dir_obj.select_one(".dir_product > a:nth-child(1)",href=True)
         href = dir_obj_a['href']
