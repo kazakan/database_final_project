@@ -226,7 +226,7 @@ if __name__ == "__main__":
     loop.close()  
 
     with open(f'{begin}_{end}.pickle', 'wb') as handle:
-        pickle.dump(a, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(ret, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
     
