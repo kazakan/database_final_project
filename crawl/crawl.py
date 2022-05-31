@@ -140,6 +140,12 @@ def getActors(pageSoup : BeautifulSoup) :
 
     return ret
 
+def getPosterSrc(pageSoup : BeautifulSoup):
+    img_poster = pageSoup.select_one("div.mv_info_area > div.poster > a:nth-child(1) > img:nth-child(1)")
+    if(img_poster):
+        return img_poster['src']
+    return None
+
 def crawlOnePage(page : BeautifulSoup):
     result = {}
 
@@ -152,6 +158,7 @@ def crawlOnePage(page : BeautifulSoup):
     result['mv'] = movie
     result['director'] = getDirectors(page)
     result['actor'] = getActors(page)
+    result['poster'] = getPosterSrc(page)
     return result
 
 def parseOne(response):
