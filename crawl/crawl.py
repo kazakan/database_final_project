@@ -124,10 +124,11 @@ def getDirectors(pageSoup : BeautifulSoup) :
         dir_obj_a = dir_obj.select_one(".dir_product > a:nth-child(1)",href=True)
 
         if dir_obj_a is not None:
-            href = dir_obj_a['href']
-            data['name'] = dir_obj_a['title']
+            if dir_obj_a.has_attr('href'):
+                href = dir_obj_a['href']
+                data['name'] = dir_obj_a['title']
 
-            data['code'] = int(href.split("=")[-1].strip())
+                data['code'] = int(href.split("=")[-1].strip())
         ret.append(data)
 
     return ret
