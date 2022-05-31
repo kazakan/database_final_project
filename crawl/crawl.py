@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 import traceback
+import pickle
 
 async def getMovieDirectorActorPage(code):
     result = await loop.run_in_executor(None, requests.get,f"https://movie.naver.com/movie/bi/mi/detail.naver?code={code}")
@@ -198,8 +199,8 @@ def parseOne(response):
             return None
         return result
 
-async def main():
-    codes = range(10000,10100)
+async def processParseBetweenCode(begin,end):
+    codes = range(begin,end)
     begin = time()
     responses_future = [asyncio.ensure_future(getMovieDirectorActorPage(code)) for code in codes]
     responses = await asyncio.gather(*responses_future)
@@ -219,12 +220,15 @@ async def main():
 
 if __name__ == "__main__":
 
- 
+    begin, end = 10000,10100
     loop = asyncio.get_event_loop()         
-    ret = loop.run_until_complete(main())          
+    ret = loop.run_until_complete(processParseBetweenCode(begin,end))          
     loop.close()  
 
-    print(ret)
+    with open(f'{begin}_{end}.pickle', 'wb') as handle:
+        pickle.dump(a, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
     
     
     
