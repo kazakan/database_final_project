@@ -16,7 +16,8 @@ CREATE TABLE movie (
     country_short TINYTEXT,
     actor_short TEXT,
     grade_short TEXT,
-    poster_url TEXT
+    poster_url TEXT,
+    mv_year INT
 );
 
 SET foreign_key_checks = 0;
