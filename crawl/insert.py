@@ -66,7 +66,7 @@ def insert_actor_param(code, data) -> tuple[list[tuple]]:
     One is for 'actor' table, another is for 'who_acted' table 
     """
     actors = data.get("actor")
-    if actors is None or len(actor) == 1:
+    if actors is None or len(actor) == 0:
         return None
 
     params_actor = []
@@ -93,8 +93,33 @@ def insert_actor_param(code, data) -> tuple[list[tuple]]:
     return params_actor, params_who_acted
 
 
-def insert_director_param(code, data) -> Tuple or None:
-    return ()
+def insert_director_param(code, data) -> tuple[list[tuple]]:
+    """
+    Returns 2 list of tuples.
+
+    One is for 'actor' table, another is for 'who_acted' table 
+    """
+    directors = data.get("director")
+    if directors is None or len(directors) == 0:
+        return None
+
+    params_director = []
+    params_who_directed = []
+
+    for director in directors:
+
+        param_director = (
+            director['code'],  # "dr_code",
+            director.get('name'), # dr_name
+            director.get('img') # img_url
+        )
+
+        param_who_directed = (code, director['code'])
+
+        params_director.append(param_director)
+        params_who_directed.append(param_who_directed)
+        
+    return params_director, params_who_directed
 
 
 def insert_movie_param(code, data) -> Tuple or None:
