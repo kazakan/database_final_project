@@ -57,24 +57,45 @@ def parseMyInfo(pageSoup : BeautifulSoup):
 
     # first dd in infospec
     # genres | nation | minute (optional) | release (optional)
-    dd1 : BeautifulSoup = soup_info_spec.select_one("dd:nth-child(2)")
-    dd1_spans : List[BeautifulSoup] = dd1.find_all("span")
+ 
 
     def parseSpan(span : BeautifulSoup):
-        if("N=a:ifo.genre" in span.text): # genre
+        stringfy_span = str(span)
+        if("N=a:ifo.genre" in stringfy_span): # genre
             a_summary : List[BeautifulSoup] = span.find_all("a")
             ret['summarys'] = [t.text for t in a_summary]
-        elif("N=a:ifo.nation" in span.text): #nation
-            a_country = span.find("a")
-            ret['country']  = a_country.text if(a_country) else None
-        elif("N=a:ifo.nation" in span.text): #nation
+        elif("N=a:ifo.nation" in stringfy_span): #nation
+            a_country : List[BeautifulSoup] = span.find_all("a")
+            ret['nation'] = [t.text for t in a_country]
+        elif("분" in stringfy_span): #minute
             ret['minute'] = span.text.strip()[:-1]
-        elif("N=a:ifo.day" in span.text): # release date
+        elif("N=a:ifo.day" in stringfy_span): # release date
             ret["date"] = span.find_all("a")[-1].text.strip('.')
-    
-    for span in dd1_spans:
-        parseSpan(span)
 
+    dts = soup_info_spec.find_all('dt')
+    dds = soup_info_spec.find_all('dd')
+
+    for dt, dd in zip(dts,dds):
+        if "개요" in dt.text:
+            dd1_spans : List[BeautifulSoup] = dd.select("span")
+    
+            for span in dd1_spans:
+                parseSpan(span)
+
+        elif "등급" in dt.text:
+            _grade = []
+            for a in dd.select('a'):
+                if 'grade' in str(a):
+                    _grade.append(a.text)
+            ret["grade"] = _grade
+
+        elif "감독" in dt.text:
+            _directors = []
+            for a in dd.select('a'):
+                _directors.append(a.text)
+            ret["director_short"] = _directors
+
+                
     # get ratings
     def parseRatings(div : BeautifulSoup):
         key_num = None
@@ -256,6 +277,7 @@ if __name__ == "__main__":
 
         loop = asyncio.get_event_loop()       
         ret = loop.run_until_complete(processParseBetweenCode(chunk_start,chunk_end)) 
+        print(ret)
 
         with open(f'./out/{chunk_start}_{chunk_end}_crawled.pickle', 'wb') as handle:
             pickle.dump(ret, handle, protocol=pickle.HIGHEST_PROTOCOL)
