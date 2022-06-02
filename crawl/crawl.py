@@ -1,11 +1,11 @@
 import asyncio
 from time import time
 from typing import List
-import requests
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 import traceback
 import pickle
+import sys
 
 def readFile(code):
     try :
@@ -218,7 +218,6 @@ def parseOne(pageText : str):
         return result
 
 async def processParseBetweenCode(begin,end):
-    print(f"Code {begin}~{end-1} 작업중...")
 
     codes = range(begin,end)
     begin = time()
@@ -226,30 +225,40 @@ async def processParseBetweenCode(begin,end):
     responses = await asyncio.gather(*responses_future)
     end = time()
 
-    print('로딩 실행 시간: {0:.3f}초'.format(end - begin))
-
-    begin = time()
     with Pool() as p:
         ret = p.map(parseOne,responses)
-    end = time()
 
-    print('Parsing 실행 시간: {0:.3f}초'.format(end - begin))
 
     return ret
 
 
 if __name__ == "__main__":
 
-    start, end, step = 21000,300000, 1000
-    for chunk_start in range(start,end,step):
+    start, end, step = 10000,20000,1000
+
+    if len(sys.argv) >= 3:
+        start = int(sys.argv[1]) if sys.argv[1] else 10000
+        end = int(sys.argv[2]) if sys.argv[2] else 20000
+
+    nChunk = (end-start) // step + (1 if (end-start) % step > 0 else 0)
+
+    t_begin = time()
+
+    for idx,chunk_start in enumerate(range(start,end,step)):
 
         chunk_end = chunk_start+step
         if chunk_end > end: chunk_end = end
 
-        loop = asyncio.new_event_loop()       
-        ret = loop.run_until_complete(processParseBetweenCode(chunk_start,chunk_end))          
-        loop.close()  
+        
+        print(f"Processing {chunk_start}~{chunk_end} | {round(idx/nChunk * 100,4)}% | {idx} / {nChunk} | time ellapsed {int(time() - t_begin)} sec",end="\r")
+
+        loop = asyncio.get_event_loop()       
+        ret = loop.run_until_complete(processParseBetweenCode(chunk_start,chunk_end)) 
 
         with open(f'./out/{chunk_start}_{chunk_end}_crawled.pickle', 'wb') as handle:
             pickle.dump(ret, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                 
+    loop.close()  
+
+    print(f"\nDone! {start}~{end}, Time ellapsed = {int(time() - t_begin)} sec")
 
