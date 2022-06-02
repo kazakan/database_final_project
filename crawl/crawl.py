@@ -7,17 +7,27 @@ from multiprocessing import Pool
 import traceback
 import pickle
 
+def readFile(code):
+    try :
+        f = open(f"./htmls/{code}.html",'r')
+        data = f.read()
+        f.close()
+        return data
+    except Exception as e:
+        traceback.print_exception(e)
+        return None
+
 async def getMovieDirectorActorPage(code):
-    result = await loop.run_in_executor(None, requests.get,f"https://movie.naver.com/movie/bi/mi/detail.naver?code={code}")
+    result = await loop.run_in_executor(None,readFile,code)
     return result
 
-async def getMovieReview(code,pageNum):
-    result = await loop.run_in_executor(
-        None, 
-        requests.get,
-        f"https://movie.naver.com/movie/bi/mi/pointWriteFormList.naver?code={code}&type=after&isActualPointWriteExecute=false&isMileageSubscriptionAlready=false&isMileageSubscriptionReject=false&page={pageNum}"
-    )
-    return result
+# async def getMovieReview(code,pageNum):
+#     result = await loop.run_in_executor(
+#         None, 
+#         requests.get,
+#         f"https://movie.naver.com/movie/bi/mi/pointWriteFormList.naver?code={code}&type=after&isActualPointWriteExecute=false&isMileageSubscriptionAlready=false&isMileageSubscriptionReject=false&page={pageNum}"
+#     )
+#     return result
 
 def parseMyInfo(pageSoup : BeautifulSoup):
     soup_my_info : BeautifulSoup = pageSoup.select_one('.mv_info_area > .mv_info')
@@ -193,12 +203,11 @@ def crawlOnePage(page : BeautifulSoup):
     result['poster'] = getPosterSrc(page)
     return result
 
-def parseOne(response):
-        param = response
-        if(param.status_code != 200) : return None
-        elif("영화 코드값 오류입니다" in param.text): return None
+def parseOne(pageText : str):
+        if(pageText is None) : return None
+        if("영화 코드값 오류입니다" in pageText): return None
         
-        bs = BeautifulSoup(param.text,'html.parser')
+        bs = BeautifulSoup(pageText,'html.parser')
         
         result = None
         try:
@@ -217,7 +226,7 @@ async def processParseBetweenCode(begin,end):
     responses = await asyncio.gather(*responses_future)
     end = time()
 
-    print('다운 실행 시간: {0:.3f}초'.format(end - begin))
+    print('로딩 실행 시간: {0:.3f}초'.format(end - begin))
 
     begin = time()
     with Pool() as p:
