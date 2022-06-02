@@ -122,11 +122,11 @@ def insert_director_param(code, data) -> tuple[list[tuple]]:
     return params_director, params_who_directed
 
 
-def insert_movie_param(code, data) -> Tuple or None:
+def insert_where_made_param(code, data) -> Tuple or None:
     return ()
 
 
-def insert_movie_param(code, data) -> Tuple or None:
+def insert_what_grade_param(code, data) -> Tuple or None:
     return ()
 
 
