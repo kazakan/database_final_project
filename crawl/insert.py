@@ -7,15 +7,16 @@ import os
 import pymysql
 
 
-def create_insert_sql(table_name, n_cols, ignore=False):
+def create_insert_sql(table_name, n_cols, ignore=True):
     statement = "INSERT "
     if ignore:
         statement += "IGNORE "
     statement += "INTO "
     statement += table_name
     statement += " VALUES ( "
-    statement += ("%s,"*len(n_cols))[:-1]
+    statement += ("%s,"*n_cols)[:-1]
     statement += " )"
+    return statement
 
 
 MOVIE_COLUMNS = [
@@ -62,8 +63,8 @@ def insert_movie_param(code, data) -> Tuple or None:
     mv = data['mv']
     return (
         code,  # mv_code
-        mv.get("name"),        # "mv_name"
-        mv.get("altname"),        # "altname"
+        mv.get("name",""),        # "mv_name"
+        mv.get("altname",""),        # "altname"
         mv.get("minute"),        # "playtime"
         None,        # "release_date"
         mv.get("watched_rating_num"),  # "watched_rating_num"
@@ -71,12 +72,12 @@ def insert_movie_param(code, data) -> Tuple or None:
         mv.get("commentor_rating"),  # "commentor_rating"
         mv.get("netizen_rating_num"),  # "netizen_rating_num"
         mv.get("netizen_rating"),  # "netizen_rating"
-        mv.get("director_short"),  # "director_short"
-        None,  # "country_short"
-        None,  # "actor_short"
-        None,  # "grade_short"
-        data.get['poster'],  # "poster_url"
-        mv.get("year"),  # "year"
+        "",  # "director_short"
+        "",  # "country_short"
+        "",  # "actor_short"
+        "",  # "grade_short"
+        data.get('poster',""),  # "poster_url"
+        mv.get("year")  # "year"
     )
 
 
@@ -87,8 +88,8 @@ def insert_actor_param(code, data) -> tuple[list[tuple]]:
     One is for 'actor' table, another is for 'who_acted' table 
     """
     actors = data.get("actor")
-    if actors is None or len(actor) == 0:
-        return None
+    if actors is None or len(actors) == 0:
+        return None, None
 
     params_actor = []
     params_who_acted = []
@@ -122,15 +123,18 @@ def insert_director_param(code, data) -> tuple[list[tuple]]:
     """
     directors = data.get("director")
     if directors is None or len(directors) == 0:
-        return None
+        return None, None
 
     params_director = []
     params_who_directed = []
 
     for director in directors:
+        dr_code = director.get('code')
+        if dr_code is None:
+            continue
 
         param_director = (
-            director['code'],  # "dr_code",
+            dr_code,  # "dr_code",
             director.get('name'), # dr_name
             director.get('img') # img_url
         )
@@ -150,7 +154,7 @@ def insert_where_made_param(code, data) -> list[Tuple] or None:
 
     params_country = []
     for country in countries:
-        params_country.append(code,country)
+        params_country.append((code,country))
     return params_country
 
 
@@ -161,15 +165,25 @@ def insert_what_grade_param(code, data) -> Tuple or None:
 
     params_grade = []
     for grade in grades:
-        params_grade.append(code,grade)
+        params_grade.append((code,grade))
     return params_grade
 
 
 def main():
+    db, cur = init_db()
+
     PICKLE_PATH_ROOT = Path("./out")
     for pickle_path in PICKLE_PATH_ROOT.glob("*.pickle"):
         code_start, code_end = pickle_path.name.split('.')[-2].split('_')[:2]
         code_range = range(int(code_start), int(code_end))
+
+        params_movie = []
+        params_actor = []
+        params_director = []
+        params_who_acted = []
+        params_who_directed = []
+        params_where_made = []
+        params_what_grade = []
 
         with open(pickle_path, 'rb') as f:
             datas = pickle.load(f)
@@ -179,7 +193,44 @@ def main():
             if data is None:
                 continue
 
-            print(data)
+            # create params
+            p1 = insert_movie_param(mv_code,data)
+            if p1 is not None:
+                params_movie.append(p1)
+
+            p1, p2 = insert_actor_param(mv_code,data)
+            if p1 is not None:
+                params_actor.extend(p1)
+                params_who_acted.extend(p2)
+
+            p1, p2 = insert_director_param(mv_code,data)
+            if p1 is not None:
+                params_director.extend(p1)
+                params_who_directed.extend(p2)
+
+            p1 = insert_what_grade_param(mv_code,data)
+            if p1 is not None:
+                params_what_grade.extend(p1)
+
+            p1 = insert_where_made_param(mv_code,data)
+            if p1 is not None:
+                params_where_made.extend(p1)
+            
+        # insert
+        cur.executemany(INSERT_INTO_MOVIE,params_movie)
+        db.commit()
+        cur.executemany(INSERT_INTO_ACTOR,params_actor)
+        db.commit()
+        cur.executemany(INSERT_INTO_DIRECTOR,params_director)
+        db.commit()
+        cur.executemany(INSERT_INTO_WHO_ACTED,params_who_acted)
+        db.commit()
+        cur.executemany(INSERT_INTO_WHO_DIRECTED,params_who_directed)
+        db.commit()
+        cur.executemany(INSERT_INTO_WHAT_GRADE,params_what_grade)
+        db.commit()
+        cur.executemany(INSERT_INTO_WHERE_MADE,params_where_made)
+        db.commit()
 
 
 if __name__ == "__main__":
