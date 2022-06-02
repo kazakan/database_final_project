@@ -6,6 +6,18 @@ import dotenv
 import os
 import pymysql
 
+
+def create_insert_sql(table_name, n_cols, ignore=False):
+    statement = "INSERT "
+    if ignore:
+        statement += "IGNORE "
+    statement += "INTO "
+    statement += table_name
+    statement += " VALUES ( "
+    statement += ("%s,"*len(n_cols))[:-1]
+    statement += " )"
+
+
 MOVIE_COLUMNS = [
     'mv_code', "mv_name", "altname", "playtime", "release_date",
     "watched_rating_num", "watched_rating", "commentor_rating", "netizen_rating_num", "netizen_rating",
@@ -15,6 +27,15 @@ MOVIE_COLUMNS = [
 ACTOR_COLUMNS = ["ac_code", "ac_name", "ismain", "ac_role", "img_url"]
 
 DIRECTOR_COLUMNS = ["dr_code", "dr_name", " img_url"]
+
+INSERT_INTO_MOVIE = create_insert_sql("movie", len(MOVIE_COLUMNS))
+INSERT_INTO_ACTOR = create_insert_sql("actor", len(ACTOR_COLUMNS))
+INSERT_INTO_DIRECTOR = create_insert_sql("director", len(DIRECTOR_COLUMNS))
+
+INSERT_INTO_WHO_DIRECTED = create_insert_sql("who_directed", 2)
+INSERT_INTO_WHO_ACTED = create_insert_sql("who_acted", 2)
+INSERT_INTO_WHERE_MADE = create_insert_sql("where_made", 2)
+INSERT_INTO_WHAT_GRADE = create_insert_sql("what_grade", 2)
 
 
 def init_db():
@@ -122,12 +143,26 @@ def insert_director_param(code, data) -> tuple[list[tuple]]:
     return params_director, params_who_directed
 
 
-def insert_where_made_param(code, data) -> Tuple or None:
-    return ()
+def insert_where_made_param(code, data) -> list[Tuple] or None:
+    countries = data['mv'].get('nation')
+    if countries is None or len(countries) == 0:
+        return None
+
+    params_country = []
+    for country in countries:
+        params_country.append(code,country)
+    return params_country
 
 
 def insert_what_grade_param(code, data) -> Tuple or None:
-    return ()
+    grades = data['mv'].get('grade')
+    if grades is None or len(grades) == 0:
+        return None
+
+    params_grade = []
+    for grade in grades:
+        params_grade.append(code,grade)
+    return params_grade
 
 
 def main():
