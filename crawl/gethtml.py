@@ -28,7 +28,7 @@ async def main(begin,end, step):
         t_begin = time()
 
         for idx, res in enumerate(responses):
-            c = idx + begin
+            c = idx + chunk_begin
 
             with open(f"./htmls/{c}.html",'wb') as file:
                 file.write(res.content)
