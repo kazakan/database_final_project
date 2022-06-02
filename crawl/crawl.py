@@ -277,7 +277,6 @@ if __name__ == "__main__":
 
         loop = asyncio.get_event_loop()       
         ret = loop.run_until_complete(processParseBetweenCode(chunk_start,chunk_end)) 
-        print(ret)
 
         with open(f'./out/{chunk_start}_{chunk_end}_crawled.pickle', 'wb') as handle:
             pickle.dump(ret, handle, protocol=pickle.HIGHEST_PROTOCOL)
