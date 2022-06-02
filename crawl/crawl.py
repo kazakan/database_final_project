@@ -179,11 +179,11 @@ def getActors(pageSoup : BeautifulSoup) :
 
         p_obj  = li_obj.select_one("div.p_info")
         if(p_obj is None):
-            return
+            continue
             
         p_obj_a = p_obj.select_one("a:nth-child(1)",href=True)
         if p_obj_a is None or not p_obj_a.has_attr('href'):
-            break
+            continue
 
         href = p_obj_a['href']
 
