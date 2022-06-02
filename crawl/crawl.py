@@ -239,6 +239,8 @@ if __name__ == "__main__":
     if len(sys.argv) >= 3:
         start = int(sys.argv[1]) if sys.argv[1] else 10000
         end = int(sys.argv[2]) if sys.argv[2] else 20000
+    if len(sys.argv) >= 4:
+        step = int(sys.argv[3]) if sys.argv[2] else 1000
 
     nChunk = (end-start) // step + (1 if (end-start) % step > 0 else 0)
 
