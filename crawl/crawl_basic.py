@@ -38,7 +38,7 @@ def parseSectionGroup(pageSoup : BeautifulSoup):
 
         comment_list = objSectionSoup.select(".score_result > ul:nth-child(1) > li")
         comments = []
-        if len(comment_list > 0):
+        if len(comment_list) > 0:
             for li in comment_list:
                 cmt = {}
 
@@ -48,7 +48,7 @@ def parseSectionGroup(pageSoup : BeautifulSoup):
 
                 reple = li.select_one("div:nth-child(2) > p:nth-child(1)")
                 if reple is not None:
-                    cmt['reple'] = reple.text
+                    cmt['reple'] = reple.text.strip()
 
                 good = li.select_one("a._sympathyButton > strong")
                 if good is not None:
@@ -66,6 +66,8 @@ def parseSectionGroup(pageSoup : BeautifulSoup):
         
     for objsection in div_objSections:
         parseObjSection(objsection)
+
+    print(ret)
 
     if len(ret.keys()) > 0 :
         return ret
