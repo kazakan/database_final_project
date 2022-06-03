@@ -25,7 +25,7 @@ MOVIE_COLUMNS = [
     "director_short", "country_short", "actor_short", "grade_short", "poster_url", "year"
 ]
 
-ACTOR_COLUMNS = ["ac_code", "ac_name", "ismain", "ac_role", "img_url"]
+ACTOR_COLUMNS = ["ac_code", "ac_name", "img_url"]
 
 DIRECTOR_COLUMNS = ["dr_code", "dr_name", " img_url"]
 
@@ -34,7 +34,7 @@ INSERT_INTO_ACTOR = create_insert_sql("actor", len(ACTOR_COLUMNS))
 INSERT_INTO_DIRECTOR = create_insert_sql("director", len(DIRECTOR_COLUMNS))
 
 INSERT_INTO_WHO_DIRECTED = create_insert_sql("who_directed", 2)
-INSERT_INTO_WHO_ACTED = create_insert_sql("who_acted", 2)
+INSERT_INTO_WHO_ACTED = create_insert_sql("who_acted", 4)
 INSERT_INTO_WHERE_MADE = create_insert_sql("where_made", 2)
 INSERT_INTO_WHAT_GRADE = create_insert_sql("what_grade", 2)
 
@@ -102,12 +102,15 @@ def insert_actor_param(code, data) -> tuple[list[tuple]]:
         param_actor = (
             actor['code'],  # "ac_code",
             actor.get('name'),  # "ac_name",
-            ismain,  # "ismain",
-            actor.get('role'),  # "ac_role",
             actor.get('img'),  # "img_url"
         )
 
-        param_who_acted = (code, actor['code'])
+        param_who_acted = (
+            code,
+            actor['code'],
+            ismain,  # "ismain",
+            actor.get('role')  # "ac_role",
+        )
 
         params_actor.append(param_actor)
         params_who_acted.append(param_who_acted)
