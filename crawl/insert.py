@@ -22,7 +22,7 @@ def create_insert_sql(table_name, n_cols, ignore=True):
 MOVIE_COLUMNS = [
     'mv_code', "mv_name", "altname", "playtime", "release_date",
     "watched_rating_num", "watched_rating", "commentor_rating", "netizen_rating_num", "netizen_rating",
-    "director_short", "country_short", "actor_short", "grade_short", "poster_url", "year"
+    "director_short", "country_short", "actor_short", "grade_short", "poster_url", "year","story"
 ]
 
 ACTOR_COLUMNS = ["ac_code", "ac_name", "img_url"]
@@ -37,6 +37,8 @@ INSERT_INTO_WHO_DIRECTED = create_insert_sql("who_directed", 2)
 INSERT_INTO_WHO_ACTED = create_insert_sql("who_acted", 4)
 INSERT_INTO_WHERE_MADE = create_insert_sql("where_made", 2)
 INSERT_INTO_WHAT_GRADE = create_insert_sql("what_grade", 2)
+
+INSERT_INTO_REPLY = create_insert_sql("reply", 5)
 
 
 def init_db():
@@ -59,8 +61,10 @@ def init_db():
     return db, cursor
 
 
-def insert_movie_param(code, data) -> Tuple or None:
+def insert_movie_param(code, data, basic_data) -> Tuple or None:
     mv = data['mv']
+    
+    story = basic_data.get("story","") if basic_data is not None else ""
     return (
         code,  # mv_code
         mv.get("name",""),        # "mv_name"
@@ -77,7 +81,8 @@ def insert_movie_param(code, data) -> Tuple or None:
         "",  # "actor_short"
         "",  # "grade_short"
         data.get('poster',""),  # "poster_url"
-        mv.get("year")  # "year"
+        mv.get("year"),  # "year"
+        story
     )
 
 
@@ -171,12 +176,35 @@ def insert_what_grade_param(code, data) -> Tuple or None:
         params_grade.append((code,grade))
     return params_grade
 
+def insert_reply(code,basic_data):
+    if basic_data is None:
+        return None
+        
+    comments = basic_data.get("comments")
+    if comments is None or len(comments) == 0:
+        return None
+    
+    params_comments = []
+    for comment in comments:
+        params_comments.append(
+            (
+                code,
+                comment.get("star"),
+                comment.get("good"),
+                comment.get("bad"),
+                comment.get("reple","")
+            )
+        )
+    return params_comments
+
 
 def main():
     db, cur = init_db()
 
     PICKLE_PATH_ROOT = Path("./out")
     for pickle_path in PICKLE_PATH_ROOT.glob("*.pickle"):
+        if("basic" in pickle_path.name) : continue
+
         code_start, code_end = pickle_path.name.split('.')[-2].split('_')[:2]
         code_range = range(int(code_start), int(code_end))
 
@@ -187,17 +215,21 @@ def main():
         params_who_directed = []
         params_where_made = []
         params_what_grade = []
+        params_reply = []
 
         with open(pickle_path, 'rb') as f:
             datas = pickle.load(f)
 
-        for mv_code, data in zip(code_range, datas):
+        with open(str(PICKLE_PATH_ROOT)+f"/{code_start}_{code_end}_basic.pickle",'rb') as f:
+            basic_data = pickle.load(f)
+
+        for mv_code, data ,basic in zip(code_range, datas, basic_data):
 
             if data is None:
                 continue
 
             # create params
-            p1 = insert_movie_param(mv_code,data)
+            p1 = insert_movie_param(mv_code,data,basic)
             if p1 is not None:
                 params_movie.append(p1)
 
@@ -218,6 +250,10 @@ def main():
             p1 = insert_where_made_param(mv_code,data)
             if p1 is not None:
                 params_where_made.extend(p1)
+
+            p1 = insert_reply(mv_code,basic)
+            if p1 is not None:
+                params_reply.extend(p1)
             
         # insert
         cur.executemany(INSERT_INTO_MOVIE,params_movie)
@@ -233,6 +269,8 @@ def main():
         cur.executemany(INSERT_INTO_WHAT_GRADE,params_what_grade)
         db.commit()
         cur.executemany(INSERT_INTO_WHERE_MADE,params_where_made)
+        db.commit()
+        cur.executemany(INSERT_INTO_REPLY,params_reply)
         db.commit()
 
 

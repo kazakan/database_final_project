@@ -17,7 +17,8 @@ CREATE TABLE movie (
     actor_short TEXT,
     grade_short TEXT,
     poster_url TEXT,
-    mv_year INT
+    mv_year INT,
+    story text
 );
 
 SET foreign_key_checks = 0;
@@ -37,6 +38,20 @@ CREATE TABLE director (
 	dr_code INT PRIMARY KEY,
 	dr_name TINYTEXT,
     img_url TEXT
+);
+
+SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS reply;
+SET foreign_key_checks = 1;
+CREATE TABLE reply (
+	mv_code INT,
+	star INT,
+    good INT,
+    bad INT,
+    reple Text,
+    FOREIGN KEY (mv_code) REFERENCES movie(mv_code)
+		ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS who_directed;
