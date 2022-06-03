@@ -67,8 +67,6 @@ def parseSectionGroup(pageSoup : BeautifulSoup):
     for objsection in div_objSections:
         parseObjSection(objsection)
 
-    print(ret)
-
     if len(ret.keys()) > 0 :
         return ret
     return None
@@ -138,7 +136,7 @@ if __name__ == "__main__":
         loop = asyncio.get_event_loop()       
         ret = loop.run_until_complete(processParseBetweenCode(chunk_start,chunk_end)) 
 
-        with open(f'./out/{chunk_start}_{chunk_end}_crawled.pickle', 'wb') as handle:
+        with open(f'./out/{chunk_start}_{chunk_end}_basic.pickle', 'wb') as handle:
             pickle.dump(ret, handle, protocol=pickle.HIGHEST_PROTOCOL)
                  
     loop.close()  
