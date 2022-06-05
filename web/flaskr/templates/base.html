@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="./css/main.css" rel="stylesheet" />
+    <title>영화검색</title>
+</head>
+
+<body>
+    <div>
+        <h1>
+            영화검색
+        </h1>
+        <h3>
+            201813339 도준형
+        </h3>
+    </div>
+
+    <form action="/" method="post">
+        검색어 : <input type="text" name="user">
+        <input type="submit" value="검색">
+    </form>
+
+    <ul class="mvlist">
+        {% for movie in movie_list %}
+        <li>
+            <p class="result_thumb">
+                <img src="{{ movie.poster }}" alt="" width="180" height="270"
+                    style="text-align: left; display: block; ">
+            </p>
+            <dl>
+                <dt>
+                    {{ movie.name }}
+                    {% if movie.altname is defined and movie.altname | length > 0 %}
+                    ({{movie.altname}})
+                    {% endif %}
+                </dt>
+
+                <dd class="point">
+                    <span class="star"><em class="view_star" style="width:87.2%"></em></span><em class="num">8.72</em>
+                    <em class="cuser_cnt">(참여 18728명)</em>
+                </dd>
+
+                <dd class="etc">액션, 모험, 판타지|미국||2016</dd>
+                <dd class="etc">감독 : 스콧 데릭슨 출연 : 베네딕트 컴버배치, 틸다 스윈튼, 치웨텔 에지오포레이첼 맥아담스</dd>
+                <dd class="etc_btn">
+                </dd>
+            </dl>
+        </li>
+        {% endfor%}
+    </ul>
+</body>
+
+</html>
