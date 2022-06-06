@@ -54,6 +54,17 @@ CREATE TABLE reply (
         ON DELETE CASCADE
 );
 
+SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS genres;
+SET foreign_key_checks = 1;
+CREATE TABLE genres (
+	mv_code INT,
+    genre VARCHAR(10),
+    FOREIGN KEY (mv_code) REFERENCES movie(mv_code)
+		ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
 DROP TABLE IF EXISTS who_directed;
 CREATE TABLE who_directed (
 	mv_code INT NOT NULL,
