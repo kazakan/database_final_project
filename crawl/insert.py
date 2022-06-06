@@ -39,7 +39,7 @@ INSERT_INTO_WHERE_MADE = create_insert_sql("where_made", 2)
 INSERT_INTO_WHAT_GRADE = create_insert_sql("what_grade", 2)
 
 INSERT_INTO_REPLY = create_insert_sql("reply", 5)
-
+INSERT_INTO_GENRES = create_insert_sql("genres",2)
 
 def init_db():
     dotenv.load_dotenv()
@@ -176,6 +176,16 @@ def insert_what_grade_param(code, data) -> Tuple or None:
         params_grade.append((code,grade))
     return params_grade
 
+def insert_genres_param(code, data) -> Tuple or None:
+    genres = data['mv'].get('summarys')
+    if genres is None or len(genres) == 0:
+        return None
+
+    params_genres = []
+    for genre in genres:
+        params_genres.append((code,genre))
+    return params_genres
+
 def insert_reply(code,basic_data):
     if basic_data is None:
         return None
@@ -216,6 +226,7 @@ def main():
         params_where_made = []
         params_what_grade = []
         params_reply = []
+        params_genres = []
 
         with open(pickle_path, 'rb') as f:
             datas = pickle.load(f)
@@ -254,7 +265,11 @@ def main():
             p1 = insert_reply(mv_code,basic)
             if p1 is not None:
                 params_reply.extend(p1)
-            
+         
+            p1 = insert_genres_param(mv_code,data)
+            if p1 is not None:
+                params_genres.extend(p1)
+
         # insert
         cur.executemany(INSERT_INTO_MOVIE,params_movie)
         db.commit()
@@ -272,7 +287,8 @@ def main():
         db.commit()
         cur.executemany(INSERT_INTO_REPLY,params_reply)
         db.commit()
-
+        cur.executemany(INSERT_INTO_GENRES,params_genres)
+        db.commit()
 
 if __name__ == "__main__":
     main()
