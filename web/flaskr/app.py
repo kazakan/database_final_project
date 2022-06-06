@@ -44,7 +44,16 @@ def index():
                 actors_short = ','.join([ c['ac_name'] for c in res])
                 movieList[idx]['actors'] = actors_short
 
+        # get genres
+        for idx, c in enumerate(mv_codes):
+            cur.execute(f"SELECT genre FROM genres WHERE mv_code=%s;",c)
+            res = cur.fetchall()
+            if len(res) :
+                genre_short = ','.join([ c['genre'] for c in res])
+                movieList[idx]['genre'] = genre_short
+
         return render_template('base.html', movie_list=movieList)
+
 
 
 if __name__ == "__main__":
