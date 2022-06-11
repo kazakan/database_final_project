@@ -47,9 +47,10 @@ def parseMyInfo(pageSoup : BeautifulSoup):
         pos_comma : int = str_subhead.rfind(',')
         ret['altname'] = None if pos_comma == -1 else str_subhead[:pos_comma]
         year = str_subhead if pos_comma == -1 else str_subhead[pos_comma+1:]
+        year = year.strip()
 
         if year.isnumeric():
-            ret['year'] = int(year)
+            ret['year'] = int(year)            
 
 
     # parse from info_spec
