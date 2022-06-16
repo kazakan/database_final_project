@@ -3,6 +3,7 @@
 
 <head>
     <title>영화검색</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
@@ -102,7 +103,7 @@
     <h3>배우</h3>
         <div>
             {% for act in actors %}
-            <div style="display:inline-block; width: max-content; ">
+            <div class="card" style="display:inline-block; width: max-content; ">
                 <img src="{{ act.img_url }}" alt="" width="90" height="135" style="
                                 vertical-align:middle;
                                 display:inline-block;
