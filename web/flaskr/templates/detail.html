@@ -8,12 +8,10 @@
 
 <body>
     <div>
-        <h1>
-            영화검색
-        </h1>
-        <h3>
-            201813339 도준형
-        </h3>
+        <p>
+            영화검색 201813339 도준형
+        </p>
+            
     </div>
 
     <h1>
@@ -26,18 +24,81 @@
     </h2>
     {% endif %}
 
-    
+
+    <div style="display:block;" >
+        <h3>
+            Short Info
+        </h3>
+
+        <p style="display: inline;">
+            <img src="{{ movie.poster_url }}" alt="" width="180" height="270" style="
+            vertical-align:middle;
+            display:inline-block;"
+                onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+        </p>
+
+        <div style="display:inline-block">
         {% if directors | length > 0 %}
         <div>
+            감독 :
             {% for dir in directors %}
-                <span style="background:yellow">
-                    {{ dir.dr_name }} 
-                </span>
-                &nbsp;
+            <span style="background:yellow">
+                {{ dir.dr_name }}
+            </span>
+            &nbsp;
             {% endfor %}
         </div>
         {% endif %}
+
+        {% if actors | length > 0 %}
+        <div>
+            출연 :
+            {% for act in actors %}
+            <span style="background:gray">
+                {{ act.ac_name }}
+            </span>
+            &nbsp;
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if genres | length > 0 %}
+        <div>
+            장르 :
+            {% for gen in genres %}
+            <span style="background:aquamarine">
+                {{ gen.genre }}
+            </span>
+            &nbsp;
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if countries | length > 0 %}
+        <div>
+            국가 :
+            {% for con in countries %}
+            <span style="background:aquamarine">
+                {{ con.country }}
+            </span>
+            &nbsp;
+            {% endfor %}
+        </div>
+        {% endif %}
+        </div>
+
+        
     </div>
+
+    {% if movie.story | length > 0 %}
+    <h3>
+        줄거리
+    </h3>
+    <p>
+        {{ movie.story }}
+    </p>
+    {% endif %}
+
 
 </body>
 
