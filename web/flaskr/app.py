@@ -54,7 +54,40 @@ def index():
 
         return render_template('base.html', movie_list=movieList)
 
+@app.route("/detail")
+def detail():
+    mvcode = request.args.get('mvcode')
 
+    # Get movie info
+    cur = db.cursor(pymysql.cursors.DictCursor)
+    cur.execute("SELECT * FROM movie WHERE mv_code=%s",mvcode)
+    movie = cur.fetchone()
+
+    # get director infos
+    cur.execute("SELECT * FROM director WHERE director.dr_code IN (SELECT who_directed.dr_code from who_directed where who_directed.mv_code=%s)",mvcode)
+    directors = cur.fetchall()
+
+    # actors
+    cur.execute("SELECT * FROM actor WHERE actor.ac_code IN (SELECT who_acted.ac_code from who_acted where who_acted.mv_code=%s)",mvcode)
+    actors = cur.fetchall()
+
+    # genre
+    cur.execute("SELECT genre FROM genres WHERE mv_code=%s",mvcode)
+    genres = cur.fetchall()
+
+    # country
+    cur.execute("SELECT country FROM db_final.where_made WHERE mv_code=%s",mvcode)
+    countries = cur.fetchall()
+
+
+    return render_template(
+        "detail.html",
+        movie=movie,
+        directors=directors,
+        actors=actors,
+        genres=genres,
+        countries=countries
+        )
 
 if __name__ == "__main__":
     app.run(debug=True)

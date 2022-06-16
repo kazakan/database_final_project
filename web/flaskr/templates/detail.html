@@ -16,10 +16,29 @@
         </h3>
     </div>
 
-    <form action="/" method="post">
-        검색어 : <input type="text" name="user">
-        <input type="submit" value="검색">
-    </form>
+    <h1>
+        {{movie.mv_name}}
+    </h1>
+    {% if movie.altname is not none and movie.altname | length > 0 %}
+
+    <h2>
+        {{movie.altname}}
+    </h2>
+    {% endif %}
+
+    
+        {% if directors | length > 0 %}
+        <div>
+            {% for dir in directors %}
+                <span style="background:yellow">
+                    {{ dir.dr_name }} 
+                </span>
+                &nbsp;
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
 </body>
 
 </html>
