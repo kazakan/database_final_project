@@ -64,11 +64,11 @@ def detail():
     movie = cur.fetchone()
 
     # get director infos
-    cur.execute("SELECT * FROM director WHERE director.dr_code IN (SELECT who_directed.dr_code from who_directed where who_directed.mv_code=%s)",mvcode)
+    cur.execute("SELECT * FROM who_directed left join director USING(dr_code) where mv_code = %s",mvcode)
     directors = cur.fetchall()
 
     # actors
-    cur.execute("SELECT * FROM actor WHERE actor.ac_code IN (SELECT who_acted.ac_code from who_acted where who_acted.mv_code=%s)",mvcode)
+    cur.execute("SELECT * FROM who_acted left join actor USING(ac_code) where mv_code = %s order by ismain desc",mvcode)
     actors = cur.fetchall()
 
     # genre

@@ -2,7 +2,6 @@
 <html>
 
 <head>
-    <link href="./css/main.css" rel="stylesheet" />
     <title>영화검색</title>
 </head>
 
@@ -97,6 +96,31 @@
     <p>
         {{ movie.story }}
     </p>
+    {% endif %}
+
+    {% if actors | length > 0 %}
+    <h3>배우</h3>
+        <div>
+            배우 :
+            {% for act in actors %}
+            <span style="background:gray">
+                {{ act.ac_name }}
+            </span>
+            &nbsp;
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if directors | length > 0 %}
+    <h3>감독</h3>
+        <div>
+            {% for dir in directors %}
+            <span style="background:yellow">
+                {{ dir.dr_name }}
+            </span>
+            &nbsp;
+            {% endfor %}
+        </div>
     {% endif %}
 
 
