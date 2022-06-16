@@ -3,6 +3,8 @@
 
 <head>
     <title>영화검색</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
 
 <body>
@@ -20,56 +22,47 @@
         <input type="submit" value="검색">
     </form>
 
-    <ul class="mvlist">
+    <div>
         {% for movie in movie_list %}
-        <li >
-            <div style="display:block;">
-                <p style="display: inline;">
-                    <img src="{{ movie.poster_url }}" alt="" width="180" height="270" style="
-                    vertical-align:middle;
-                    display:inline-block;"
-                        onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
-                </p>
-                <dl style="display:inline-block">
-                    <dt>
-                        {{ movie.mv_name }}
-                        {% if movie.altname is not none and movie.altname | length > 0 %}
-                        ({{movie.altname}})
-                        {% endif %}
-                    </dt>
-
-                    <dd class="point">
-                        <span class="star"><em class="view_star" style="width:87.2%"></em></span><em
-                            class="num">8.72</em>
-                        <em class="cuser_cnt">(참여 18728명)</em>
-                    </dd>
-
-                    <dd class="etc">액션, 모험, 판타지| 
-                        {% if movie.countries is not none and movie.countries | length > 0 %}
-                        {{movie.countries}}
-                        {% endif %}
-                        |
-                        2016</dd>
-                    <dd class="etc">감독 : {% if movie.directors is not none and movie.directors | length > 0 %}
-                        {{movie.directors}}
-                        {% endif %} 
-                        </dd>
-                    <dd>
-                        출연 : {% if movie.actors is not none and movie.actors | length > 0 %}
-                        {{movie.actors}}
-                        {% endif %} 
-                    </dd>
-                    <dd class="etc_btn">
-                    </dd>
-
-                    <a href= "/detail?mvcode={{ movie.mv_code }}" >자세히</a>
-                </dl>
+        <div class="twocolgrid card_static">
+            <img class="poster" src="{{ movie.poster_url }}" alt="" height="270"
+                onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+    
+            <div class="movie_short_info_ex_container">
+                <div>
+                    {{ movie.mv_name }}
+                    {% if movie.altname is not none and movie.altname | length > 0 %}
+                    ({{movie.altname}})
+                    {% endif %}
+                </div>
+    
+                <div class="point">
+                    <span class="star"><em class="view_star" style="width:87.2%"></em></span><em class="num">8.72</em>
+                    <em class="cuser_cnt">(참여 18728명)</em>
+                </div>
+    
+                <div class="etc">액션, 모험, 판타지|
+                    {% if movie.countries is not none and movie.countries | length > 0 %}
+                    {{movie.countries}}
+                    {% endif %}
+                    |
+                    2016
+                </div>
+                <div class="etc">감독 : {% if movie.directors is not none and movie.directors | length > 0 %}
+                    {{movie.directors}}
+                    {% endif %}
+                </div>
+                <div>
+                    출연 : {% if movie.actors is not none and movie.actors | length > 0 %}
+                    {{movie.actors}}
+                    {% endif %}
+                </div>
+    
+                <a href="/detail?mvcode={{ movie.mv_code }}">자세히</a>
             </div>
-        </li>
-        
-        <hr/>
+        </div>
         {% endfor%}
-    </ul>
+    </div>
 </body>
 
 </html>

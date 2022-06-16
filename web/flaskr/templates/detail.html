@@ -25,86 +25,89 @@
     {% endif %}
 
 
-    <div style="display:block;" >
+    <div class="twocolgrid card_static">
         <h3>
             Short Info
         </h3>
-
-        <p style="display: inline;">
-            <img src="{{ movie.poster_url }}" alt="" width="180" height="270" style="
-            vertical-align:middle;
-            display:inline-block;"
-                onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
-        </p>
-
-        <div style="display:inline-block">
-        {% if directors | length > 0 %}
-        <div>
-            감독 :
-            {% for dir in directors %}
-            <span style="background:yellow">
-                {{ dir.dr_name }}
-            </span>
-            &nbsp;
-            {% endfor %}
+    
+        <div></div> <!--empty cell 2 column grid-->
+    
+        <img src="{{ movie.poster_url }}" alt="" width="180" height="270" class="poster"
+            onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+    
+    
+        <div class="movie_short_info_ex_container">
+            {% if directors | length > 0 %}
+            <div>
+                감독 :
+                {% for dir in directors %}
+                <span style="background:yellow">
+                    {{ dir.dr_name }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            {% if actors | length > 0 %}
+            <div>
+                출연 :
+                {% for act in actors %}
+                <span style="background:gray">
+                    {{ act.ac_name }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            {% if genres | length > 0 %}
+            <div>
+                장르 :
+                {% for gen in genres %}
+                <span style="background:aquamarine">
+                    {{ gen.genre }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            {% if countries | length > 0 %}
+            <div>
+                국가 :
+                {% for con in countries %}
+                <span style="background:aquamarine">
+                    {{ con.country }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-
-        {% if actors | length > 0 %}
-        <div>
-            출연 :
-            {% for act in actors %}
-            <span style="background:gray">
-                {{ act.ac_name }}
-            </span>
-            &nbsp;
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if genres | length > 0 %}
-        <div>
-            장르 :
-            {% for gen in genres %}
-            <span style="background:aquamarine">
-                {{ gen.genre }}
-            </span>
-            &nbsp;
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if countries | length > 0 %}
-        <div>
-            국가 :
-            {% for con in countries %}
-            <span style="background:aquamarine">
-                {{ con.country }}
-            </span>
-            &nbsp;
-            {% endfor %}
-        </div>
-        {% endif %}
-        </div>
-
-        
+    
+    
     </div>
 
     {% if movie.story | length > 0 %}
-    <h3>
-        줄거리
-    </h3>
-    <p>
-        {{ movie.story }}
-    </p>
+    <div class="card_static">
+        <h3>
+            줄거리
+        </h3>
+        <p>
+            {{ movie.story }}
+        </p>
+    </div>
+    
     {% endif %}
 
     {% if actors | length > 0 %}
+    <div class="card_static">
     <h3>배우</h3>
         <div>
             {% for act in actors %}
             <div class="card" style="display:inline-block; width: max-content; ">
-                <img src="{{ act.img_url }}" alt="" width="90" height="135" style="
+                <img src="{{ act.img_url }}" alt="" width="90" height="135" class="profile"style="
                                 vertical-align:middle;
                                 display:inline-block;
                                 "
@@ -121,22 +124,25 @@
             </div>
             {% endfor %}
         </div>
+    </div>
     {% endif %}
 
     {% if directors | length > 0 %}
+    <div class="card_static">
     <h3>감독</h3>
         <div>
             {% for dir in directors %}
-            <div>
-                <img src="{{ dir.img_url }}" alt="" width="180" height="270" style="
+            <div class="one_director card">
+                <img src="{{ dir.img_url }}" alt="" width="180" height="270" class="profile" style="
                     vertical-align:middle;
                     display:inline-block;"
                         onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
-                <h4>{{dir.dr_name}}</h4>
+                <h4 class="one_director_name">{{dir.dr_name}}</h4>
             </div>
             &nbsp;
             {% endfor %}
         </div>
+    </div>
     {% endif %}
 
 
