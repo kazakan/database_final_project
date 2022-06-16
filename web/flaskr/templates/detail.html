@@ -101,12 +101,23 @@
     {% if actors | length > 0 %}
     <h3>배우</h3>
         <div>
-            배우 :
             {% for act in actors %}
-            <span style="background:gray">
-                {{ act.ac_name }}
-            </span>
-            &nbsp;
+            <div style="display:inline-block; width: max-content; ">
+                <img src="{{ act.img_url }}" alt="" width="90" height="135" style="
+                                vertical-align:middle;
+                                display:inline-block;
+                                "
+                    onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+                <ul style="display:inline-block;">
+            
+                    <li>이름 : {{act.ac_name}}</li>
+                    {% if act.ac_role is not none %}
+                    <li>배역 : {{act.ac_role}}</li>
+                    {% endif %}
+                    <li>{%if act.ismain == 1 %} 주연 {% else %} 조연 {% endif %}</li>
+            
+                    </ul>
+            </div>
             {% endfor %}
         </div>
     {% endif %}
