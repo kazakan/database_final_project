@@ -115,9 +115,13 @@
     <h3>감독</h3>
         <div>
             {% for dir in directors %}
-            <span style="background:yellow">
-                {{ dir.dr_name }}
-            </span>
+            <div>
+                <img src="{{ dir.img_url }}" alt="" width="180" height="270" style="
+                    vertical-align:middle;
+                    display:inline-block;"
+                        onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+                <h4>{{dir.dr_name}}</h4>
+            </div>
             &nbsp;
             {% endfor %}
         </div>
