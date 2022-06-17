@@ -79,6 +79,10 @@ def detail():
     cur.execute("SELECT country FROM db_final.where_made WHERE mv_code=%s",mvcode)
     countries = cur.fetchall()
 
+    # reply
+    cur.execute("SELECT * FROM reply WHERE mv_code=%s",mvcode)
+    replies = cur.fetchall()
+
 
     return render_template(
         "detail.html",
@@ -86,7 +90,8 @@ def detail():
         directors=directors,
         actors=actors,
         genres=genres,
-        countries=countries
+        countries=countries,
+        replies=replies
         )
 
 if __name__ == "__main__":
