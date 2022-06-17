@@ -84,6 +84,15 @@
                 {% endfor %}
             </div>
             {% endif %}
+
+            {% if movie.mv_year is not none %}
+            <div>
+                제작연도 :
+                <span style="background:aquamarine">
+                    {{ movie.mv_year }}
+                </span>
+            </div>
+            {% endif %}
         </div>
     
     
