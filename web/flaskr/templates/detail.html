@@ -154,6 +154,34 @@
     </div>
     {% endif %}
 
+    {% if movie.netizen_rating is not none
+        or movie.commentor_rating is not none 
+        or movie.watched_rating is not none and movie.watched_rating != 0 %}
+    <div class="card_static">
+        <h3>
+            평점
+        </h3>
+        {% if movie.netizen_rating is not none %}
+        <span class="normal">
+            네티즌 {{ movie.netizen_rating }} / {{ movie.netizen_rating_num }} 명
+        </span>
+        {% endif %}
+
+        {% if movie.watched_rating is not none and movie.watched_rating != 0 %}
+        <span class="normal">
+            관람자 {{ movie.watched_rating }} / {{ movie.watched_rating_num }} 명
+        </span>
+        {% endif %}
+
+        {% if movie.commentor_rating is not none %}
+        <span class="normal">
+            평론가 {{ movie.commentor_rating }}
+        </span>
+        {% endif %}
+    </div>
+    
+    {% endif %}
+
     {% if replies | length > 0 %}
     <div class="card_static">
     <h3>리뷰</h3>
