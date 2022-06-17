@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>영화검색</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div>
+        <p>
+            영화검색 201813339 도준형
+        </p>
+            
+    </div>
+
+    <h1>
+        {{movie.mv_name}}
+    </h1>
+    {% if movie.altname is not none and movie.altname | length > 0 %}
+
+    <h2>
+        {{movie.altname}}
+    </h2>
+    {% endif %}
+
+
+    <div class="twocolgrid card_static">
+        <h3>
+            Short Info
+        </h3>
+    
+        <div></div> <!--empty cell 2 column grid-->
+    
+        <img src="{{ movie.poster_url }}" alt="" width="180" height="270" class="poster"
+            onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+    
+    
+        <div class="movie_short_info_ex_container">
+            {% if directors | length > 0 %}
+            <div>
+                감독 :
+                {% for dir in directors %}
+                <span style="background:yellow">
+                    {{ dir.dr_name }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            {% if actors | length > 0 %}
+            <div>
+                출연 :
+                {% for act in actors %}
+                <span style="background:gray">
+                    {{ act.ac_name }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            {% if genres | length > 0 %}
+            <div>
+                장르 :
+                {% for gen in genres %}
+                <span style="background:aquamarine">
+                    {{ gen.genre }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            {% if countries | length > 0 %}
+            <div>
+                국가 :
+                {% for con in countries %}
+                <span style="background:aquamarine">
+                    {{ con.country }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if movie.mv_year is not none %}
+            <div>
+                제작연도 :
+                <span style="background:aquamarine">
+                    {{ movie.mv_year }}
+                </span>
+            </div>
+            {% endif %}
+        </div>
+    
+    
+    </div>
+
+    {% if movie.story | length > 0 %}
+    <div class="card_static">
+        <h3>
+            줄거리
+        </h3>
+        <p>
+            {{ movie.story }}
+        </p>
+    </div>
+    
+    {% endif %}
+
+    {% if actors | length > 0 %}
+    <div class="card_static">
+    <h3>배우</h3>
+        <div>
+            {% for act in actors %}
+            <div class="card" style="display:inline-block; width: max-content; ">
+                <img src="{{ act.img_url }}" alt="" width="90" height="135" class="profile"style="
+                                vertical-align:middle;
+                                display:inline-block;
+                                "
+                    onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+                <ul style="display:inline-block;">
+            
+                    <li>이름 : {{act.ac_name}}</li>
+                    {% if act.ac_role is not none %}
+                    <li>배역 : {{act.ac_role}}</li>
+                    {% endif %}
+                    <li>{%if act.ismain == 1 %} 주연 {% else %} 조연 {% endif %}</li>
+            
+                    </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if directors | length > 0 %}
+    <div class="card_static">
+    <h3>감독</h3>
+        <div>
+            {% for dir in directors %}
+            <div class="one_director card">
+                <img src="{{ dir.img_url }}" alt="" width="180" height="270" class="profile" style="
+                    vertical-align:middle;
+                    display:inline-block;"
+                        onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
+                <h4 class="one_director_name">{{dir.dr_name}}</h4>
+            </div>
+            &nbsp;
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if movie.netizen_rating is not none
+        or movie.commentor_rating is not none 
+        or movie.watched_rating is not none and movie.watched_rating != 0 %}
+    <div class="card_static">
+        <h3>
+            평점
+        </h3>
+        {% if movie.netizen_rating is not none %}
+        <span class="normal">
+            네티즌 {{ movie.netizen_rating }} 점 / {{ movie.netizen_rating_num }} 명
+        </span>
+        {% endif %}
+
+        {% if movie.watched_rating is not none and movie.watched_rating != 0 %}
+        <span class="normal">
+            관람자 {{ movie.watched_rating }} 점 / {{ movie.watched_rating_num }} 명
+        </span>
+        {% endif %}
+
+        {% if movie.commentor_rating is not none %}
+        <span class="normal">
+            평론가 {{ movie.commentor_rating }} 점
+        </span>
+        {% endif %}
+    </div>
+    
+    {% endif %}
+
+    {% if replies | length > 0 %}
+    <div class="card_static">
+    <h3>리뷰</h3>
+        <div>
+            {% for reple in replies %}
+            <div class="card">
+                <span class="normal">
+                    {{reple.star}}점
+                </span>
+                <span class="good">
+                    좋아요 {{reple.good}}
+                </span>
+                <span class="bad">
+                    싫어요 {{reple.bad}}
+                </span>
+                <p>
+                    {{reple.reple}}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+
+</body>
+
+</html>
