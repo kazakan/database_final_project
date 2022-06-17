@@ -133,6 +133,7 @@ def parseMyInfo(pageSoup: BeautifulSoup):
             "div:nth-child(1)> div:nth-child(3) > em:nth-child(2)")
         if em_numbers:
             numbers = em_numbers.text
+            numbers = numbers.replace(",","")
             ret[key_num] = numbers
 
         div_star_score = div.select_one("div.star_score")
