@@ -37,8 +37,14 @@
                 </div>
     
                 <div class="point">
-                    <span class="star"><em class="view_star" style="width:87.2%"></em></span><em class="num">8.72</em>
-                    <em class="cuser_cnt">(참여 18728명)</em>
+                    {% if movie.netizen_rating is not none %}
+                    <span>{{ movie.netizen_rating }}점</span>
+                    {% if movie.netizen_rating_num is not none %}
+                    <span>({{ movie.netizen_rating_num}}명 참여)</span>
+                    {% endif %}
+                    {% endif %}
+
+                    
                 </div>
     
                 <div>
@@ -50,8 +56,10 @@
                     {% if movie.countries is not none and movie.countries | length > 0 %}
                     {{movie.countries}}
                     {% endif %}
-                    |
-                    2016
+
+                    {% if movie.mv_year is not none %}
+                    | {{ movie.mv_year }}
+                    {% endif %}
                 </div>
                 <div class="etc">감독 : {% if movie.directors is not none and movie.directors | length > 0 %}
                     {{movie.directors}}
