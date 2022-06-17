@@ -61,16 +61,19 @@
                     | {{ movie.mv_year }}
                     {% endif %}
                 </div>
-                <div class="etc">감독 : {% if movie.directors is not none and movie.directors | length > 0 %}
-                    {{movie.directors}}
-                    {% endif %}
+
+                {% if movie.directors is not none and movie.directors | length > 0 %}
+                <div class="etc">
+                    감독 : {{movie.directors}}
                 </div>
+                {% endif %}
+
+                {% if movie.actors is not none and movie.actors | length > 0 %}
                 <div>
-                    출연 : {% if movie.actors is not none and movie.actors | length > 0 %}
-                    {{movie.actors}}
-                    {% endif %}
+                    출연 : {{movie.actors}}
                 </div>
-    
+                {% endif %}
+
                 <a href="/detail?mvcode={{ movie.mv_code }}">자세히</a>
             </div>
         </div>
