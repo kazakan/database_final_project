@@ -41,7 +41,12 @@
                     <em class="cuser_cnt">(참여 18728명)</em>
                 </div>
     
-                <div class="etc">액션, 모험, 판타지|
+                <div>
+                    {% if movie.genre is not none and movie.genre | length > 0 %}
+                    {{ movie.genre }}
+                    {% endif %}
+                </div>
+                <div class="etc">
                     {% if movie.countries is not none and movie.countries | length > 0 %}
                     {{movie.countries}}
                     {% endif %}
