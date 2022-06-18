@@ -45,6 +45,12 @@
         {% endfor %}
         <br>
 
+        <label><input type="radio" name="gradefilter" value="noapply" checked>없음</label>
+        {% for grade in all_grade %}
+        <label><input type="radio" name="gradefilter" value="{{grade}}">{{grade}}</label>
+        {% endfor %}
+        <br>
+
     </form>
 
     <div>

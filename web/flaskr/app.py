@@ -14,6 +14,9 @@ all_country = []
 # get all genres
 all_genre = []
 
+# get all grade
+all_grade = []
+
 @app.route("/", methods=('GET', 'POST'))
 def index():
     movieList = []
@@ -27,8 +30,14 @@ def index():
         _.execute("select distinct(genre) from genres")
         all_genre = [x[0] for x in _.fetchall()]
 
+    global all_grade
+    if len(all_grade) == 0:
+       _.execute("select distinct(grade) from what_grade")
+       all_grade = [x[0] for x in _.fetchall()]
+
+
     if request.method == "GET":
-        return render_template("base.html", movie_list=movieList,all_country=all_country, all_genre=all_genre)
+        return render_template("base.html", movie_list=movieList,all_country=all_country, all_genre=all_genre, all_grade=all_grade)
     elif request.method == "POST":
         # get constraints
         query = request.form.get('query')
@@ -37,6 +46,7 @@ def index():
         countryfilter = request.form.get('countryfilter')
         genrefilter = request.form.get('genrefilter')
         yearfilter = request.form.get('year')
+        gradefilter = request.form.get('gradefilter')
             
         is_where_in = False
         if searchby == "drname":
@@ -58,6 +68,9 @@ def index():
 
         if genrefilter != "noapply":
             sql = "select m.* from ("+sql+f") m join (select mv_code from genres where genre='{genrefilter}') wm using (mv_code)"
+
+        if gradefilter != "noapply":
+            sql = "select m.* from ("+sql+f") m join (select mv_code from what_grade where grade='{gradefilter}') wm using (mv_code)"
 
         if orderby == "name":
             sql += " order by mv_name "
@@ -106,7 +119,7 @@ def index():
                 genre_short = ','.join([ c['genre'] for c in res])
                 movieList[idx]['genre'] = genre_short
 
-        return render_template('base.html', movie_list=movieList,all_country = all_country, all_genre=all_genre)
+        return render_template('base.html', movie_list=movieList,all_country = all_country, all_genre=all_genre, all_grade=all_grade)
 
 @app.route("/detail")
 def detail():
