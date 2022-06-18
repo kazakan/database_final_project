@@ -8,11 +8,19 @@ app = Flask(__name__)
 
 db, _ = init_db()
 
+# get all countries
+all_country = []
+
 @app.route("/", methods=('GET', 'POST'))
 def index():
     movieList = []
+    global all_country
+    if len(all_country) == 0:
+        _.execute("select distinct(country) from where_made")
+        all_country = [x[0] for x in _.fetchall()]
+
     if request.method == "GET":
-        return render_template("base.html", movie_list=movieList)
+        return render_template("base.html", movie_list=movieList,all_country=all_country)
     elif request.method == "POST":
         cur = db.cursor(pymysql.cursors.DictCursor)
         query = request.form.get('query')
@@ -52,7 +60,7 @@ def index():
                 genre_short = ','.join([ c['genre'] for c in res])
                 movieList[idx]['genre'] = genre_short
 
-        return render_template('base.html', movie_list=movieList)
+        return render_template('base.html', movie_list=movieList,all_country = all_country)
 
 @app.route("/detail")
 def detail():
