@@ -8,15 +8,82 @@ app = Flask(__name__)
 
 db, _ = init_db()
 
+# get all countries
+all_country = []
+
+# get all genres
+all_genre = []
+
+# get all grade
+all_grade = []
+
 @app.route("/", methods=('GET', 'POST'))
 def index():
     movieList = []
+    global all_country
+    if len(all_country) == 0:
+        _.execute("select distinct(country) from where_made")
+        all_country = [x[0] for x in _.fetchall()]
+
+    global all_genre
+    if len(all_genre) == 0:
+        _.execute("select distinct(genre) from genres")
+        all_genre = [x[0] for x in _.fetchall()]
+
+    global all_grade
+    if len(all_grade) == 0:
+       _.execute("select distinct(grade) from what_grade")
+       all_grade = [x[0] for x in _.fetchall()]
+
+
     if request.method == "GET":
-        return render_template("base.html", movie_list=movieList)
+        return render_template("base.html", movie_list=movieList,all_country=all_country, all_genre=all_genre, all_grade=all_grade)
     elif request.method == "POST":
-        cur = db.cursor(pymysql.cursors.DictCursor)
+        # get constraints
         query = request.form.get('query')
-        cur.execute(f"SELECT * FROM movie WHERE mv_name like '%{query}%'")
+        searchby = request.form.get('searchby')
+        orderby = request.form.get('orderby')
+        countryfilter = request.form.get('countryfilter')
+        genrefilter = request.form.get('genrefilter')
+        yearfilter = request.form.get('year')
+        gradefilter = request.form.get('gradefilter')
+            
+        is_where_in = False
+        if searchby == "drname":
+            sql = f"select m.* from movie m join (select distinct mv_code from who_directed wd join( select * from director where dr_name = '{query}') t using(dr_code)) aaa using(mv_code)"
+        elif searchby == "acname":
+            sql = f"select m.* from movie m join (select distinct mv_code from who_acted wd join( select * from actor where ac_name = '{query}') t using(ac_code)) aaa using(mv_code)"
+        else:
+            sql = f"SELECT * FROM movie WHERE mv_name like '%{query}%'"
+            is_where_in = True
+
+        if yearfilter != "":
+            cond = f" mv_year={yearfilter}"
+            if not is_where_in : sql += f" where "
+            else : sql += " and "
+            sql += cond
+
+        if countryfilter != "noapply":
+            sql = "select m.* from ("+sql+f") m join (select mv_code from where_made where country='{countryfilter}') wm using (mv_code)"
+
+        if genrefilter != "noapply":
+            sql = "select m.* from ("+sql+f") m join (select mv_code from genres where genre='{genrefilter}') wm using (mv_code)"
+
+        if gradefilter != "noapply":
+            sql = "select m.* from ("+sql+f") m join (select mv_code from what_grade where grade='{gradefilter}') wm using (mv_code)"
+
+        if orderby == "name":
+            sql += " order by mv_name "
+        elif orderby == "year":
+            sql += " order by mv_year desc"
+        elif orderby == "rating":
+            sql += " order by netizen_rating desc"
+        elif orderby == "watched":
+            sql += " order by watched_rating_num desc"
+
+        cur = db.cursor(pymysql.cursors.DictCursor)
+        print(sql)
+        cur.execute(sql)
         movieList = cur.fetchall()
         
         # get directors
@@ -52,7 +119,7 @@ def index():
                 genre_short = ','.join([ c['genre'] for c in res])
                 movieList[idx]['genre'] = genre_short
 
-        return render_template('base.html', movie_list=movieList)
+        return render_template('base.html', movie_list=movieList,all_country = all_country, all_genre=all_genre, all_grade=all_grade)
 
 @app.route("/detail")
 def detail():
