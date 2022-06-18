@@ -68,10 +68,11 @@
     
             <div class="movie_short_info_ex_container">
                 <div>
-                    {{ movie.mv_name }}
+                    <h2>{{ movie.mv_name }}
                     {% if movie.altname is not none and movie.altname | length > 0 %}
                     ({{movie.altname}})
                     {% endif %}
+                    </h2>
                 </div>
     
                 <div class="point">
@@ -111,6 +112,12 @@
                     출연 : {{movie.actors}}
                 </div>
                 {% endif %}
+
+                <div>
+                    {% if movie.grade is not none and movie.grade | length > 0 %}
+                    {{ movie.grade }}
+                    {% endif %}
+                </div>
 
                 <a href="/detail?mvcode={{ movie.mv_code }}">자세히</a>
             </div>

@@ -119,6 +119,14 @@ def index():
                 genre_short = ','.join([ c['genre'] for c in res])
                 movieList[idx]['genre'] = genre_short
 
+        # get grades
+        for idx, c in enumerate(mv_codes):
+            cur.execute(f"SELECT grade FROM what_grade WHERE mv_code=%s;",c)
+            res = cur.fetchall()
+            if len(res) :
+                grade_short = ','.join([ c['grade'] for c in res])
+                movieList[idx]['grade'] = grade_short
+
         return render_template('base.html', movie_list=movieList,all_country = all_country, all_genre=all_genre, all_grade=all_grade)
 
 @app.route("/detail")
@@ -150,6 +158,9 @@ def detail():
     cur.execute("SELECT * FROM reply WHERE mv_code=%s",mvcode)
     replies = cur.fetchall()
 
+    #grade
+    cur.execute("SELECT * FROM what_grade WHERE mv_code=%s",mvcode)
+    grades = cur.fetchall()
 
     return render_template(
         "detail.html",
@@ -158,7 +169,8 @@ def detail():
         actors=actors,
         genres=genres,
         countries=countries,
-        replies=replies
+        replies=replies,
+        grades=grades
         )
 
 if __name__ == "__main__":

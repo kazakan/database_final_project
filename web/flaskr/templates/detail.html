@@ -93,6 +93,19 @@
                 </span>
             </div>
             {% endif %}
+
+            {% if grades | length > 0 %}
+            <div>
+                등급 :
+                {% for grade in grades %}
+                <span style="background:aquamarine">
+                    {{ grade.grade }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+
         </div>
     
     
