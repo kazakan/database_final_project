@@ -168,7 +168,7 @@ def insert_what_grade_param(code, data) -> Tuple or None:
 
     params_grade = []
     for grade in grades:
-        params_grade.append((code,grade))
+        params_grade.append((code,grade.strip()))
     return params_grade
 
 def insert_genres_param(code, data) -> Tuple or None:
