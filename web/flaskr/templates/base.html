@@ -32,6 +32,13 @@
         <label><input type="radio" name="orderby" value="rating">평점순</label>
         <label><input type="radio" name="orderby" value="watched" checked>평가 많은순</label>
         <br>
+        
+        <label><input type="radio" name="genrefilter" value="noapply" checked>없음</label>
+        {% for genre in all_genre %}
+        <label><input type="radio" name="genrefilter" value="{{genre}}">{{genre}}</label>
+        {% endfor %}
+        <br>
+
         <label><input type="radio" name="countryfilter" value="noapply" checked>없음</label>
         {% for ctr in all_country %}
         <label><input type="radio" name="countryfilter" value="{{ctr}}">{{ctr}}</label>

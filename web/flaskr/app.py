@@ -11,6 +11,9 @@ db, _ = init_db()
 # get all countries
 all_country = []
 
+# get all genres
+all_genre = []
+
 @app.route("/", methods=('GET', 'POST'))
 def index():
     movieList = []
@@ -19,14 +22,20 @@ def index():
         _.execute("select distinct(country) from where_made")
         all_country = [x[0] for x in _.fetchall()]
 
+    global all_genre
+    if len(all_genre) == 0:
+        _.execute("select distinct(genre) from genres")
+        all_genre = [x[0] for x in _.fetchall()]
+
     if request.method == "GET":
-        return render_template("base.html", movie_list=movieList,all_country=all_country)
+        return render_template("base.html", movie_list=movieList,all_country=all_country, all_genre=all_genre)
     elif request.method == "POST":
         # get constraints
         query = request.form.get('query')
         searchby = request.form.get('searchby')
         orderby = request.form.get('orderby')
         countryfilter = request.form.get('countryfilter')
+        genrefilter = request.form.get('genrefilter')
         yearfilter = request.form.get('year')
             
         is_where_in = False
@@ -46,6 +55,9 @@ def index():
 
         if countryfilter != "noapply":
             sql = "select m.* from ("+sql+f") m join (select mv_code from where_made where country='{countryfilter}') wm using (mv_code)"
+
+        if genrefilter != "noapply":
+            sql = "select m.* from ("+sql+f") m join (select mv_code from genres where genre='{genrefilter}') wm using (mv_code)"
 
         if orderby == "name":
             sql += " order by mv_name "
@@ -94,7 +106,7 @@ def index():
                 genre_short = ','.join([ c['genre'] for c in res])
                 movieList[idx]['genre'] = genre_short
 
-        return render_template('base.html', movie_list=movieList,all_country = all_country)
+        return render_template('base.html', movie_list=movieList,all_country = all_country, all_genre=all_genre)
 
 @app.route("/detail")
 def detail():
