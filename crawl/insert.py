@@ -20,9 +20,9 @@ def create_insert_sql(table_name, n_cols, ignore=True):
 
 
 MOVIE_COLUMNS = [
-    'mv_code', "mv_name", "altname", "playtime", "release_date",
+    'mv_code', "mv_name", "altname", "playtime",
     "watched_rating_num", "watched_rating", "commentor_rating", "netizen_rating_num", "netizen_rating",
-    "director_short", "country_short", "actor_short", "grade_short", "poster_url", "year","story"
+    "poster_url", "year","story"
 ]
 
 ACTOR_COLUMNS = ["ac_code", "ac_name", "img_url"]
@@ -70,16 +70,11 @@ def insert_movie_param(code, data, basic_data) -> Tuple or None:
         mv.get("name",""),        # "mv_name"
         mv.get("altname",""),        # "altname"
         mv.get("minute"),        # "playtime"
-        None,        # "release_date"
         mv.get("watched_rating_num"),  # "watched_rating_num"
         mv.get("watched_rating"),  # "watched_rating"
         mv.get("commentor_rating"),  # "commentor_rating"
         mv.get("netizen_rating_num"),  # "netizen_rating_num"
         mv.get("netizen_rating"),  # "netizen_rating"
-        "",  # "director_short"
-        "",  # "country_short"
-        "",  # "actor_short"
-        "",  # "grade_short"
         data.get('poster',""),  # "poster_url"
         mv.get("year"),  # "year"
         story
