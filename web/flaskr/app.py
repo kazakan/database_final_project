@@ -25,17 +25,17 @@ def index():
     global all_country
     if len(all_country) == 0:
         cur.execute("select distinct(country) from where_made")
-        all_country = [x[0] for x in _.fetchall()]
+        all_country = [x[0] for x in cur.fetchall()]
 
     global all_genre
     if len(all_genre) == 0:
         cur.execute("select distinct(genre) from genres")
-        all_genre = [x[0] for x in _.fetchall()]
+        all_genre = [x[0] for x in cur.fetchall()]
 
     global all_grade
     if len(all_grade) == 0:
        cur.execute("select distinct(grade) from what_grade")
-       all_grade = [x[0] for x in _.fetchall()]
+       all_grade = [x[0] for x in cur.fetchall()]
     cur.close()
 
 
