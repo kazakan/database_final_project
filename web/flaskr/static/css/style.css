@@ -74,3 +74,21 @@
     text-align: center;
     color :rgb(71, 71, 71);
 }
+
+#formarea:hover > .behidden{
+    opacity:1;
+    height:max-content;
+}
+
+#formarea .behidden{
+    opacity:0;
+    clear: both;
+    height:0;
+    overflow: hidden;
+
+    transition: all .5s ease .4s;
+}
+
+hr{
+    color: rgb(233, 233, 233);
+}
