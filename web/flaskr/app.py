@@ -7,6 +7,7 @@ from db import *
 app = Flask(__name__)
 
 db, _ = init_db()
+_.close()
 
 # get all countries
 all_country = []
@@ -20,6 +21,7 @@ all_grade = []
 @app.route("/", methods=('GET', 'POST'))
 def index():
     movieList = []
+    cur = db.cursor()
     global all_country
     if len(all_country) == 0:
         _.execute("select distinct(country) from where_made")
@@ -34,6 +36,7 @@ def index():
     if len(all_grade) == 0:
        _.execute("select distinct(grade) from what_grade")
        all_grade = [x[0] for x in _.fetchall()]
+    cur.close()
 
 
     if request.method == "GET":
@@ -127,6 +130,8 @@ def index():
                 grade_short = ','.join([ c['grade'] for c in res])
                 movieList[idx]['grade'] = grade_short
 
+        cur.close()
+
         return render_template('base.html', movie_list=movieList,all_country = all_country, all_genre=all_genre, all_grade=all_grade)
 
 @app.route("/detail")
@@ -161,6 +166,8 @@ def detail():
     #grade
     cur.execute("SELECT * FROM what_grade WHERE mv_code=%s",mvcode)
     grades = cur.fetchall()
+
+    cur.close()
 
     return render_template(
         "detail.html",
