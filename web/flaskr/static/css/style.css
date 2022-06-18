@@ -74,3 +74,32 @@
     text-align: center;
     color :rgb(71, 71, 71);
 }
+
+.chip{
+    padding:1px;
+    border-radius: 2px;
+    background-color: rgb(238, 238, 238);
+    border: 1px solid rgb(206, 206, 206);
+}
+
+#formarea:hover > .behidden{
+    opacity:1;
+    height:max-content;
+}
+
+#formarea .behidden{
+    opacity:0;
+    clear: both;
+    height:0;
+    overflow: hidden;
+
+    transition: all .5s ease .4s;
+}
+
+hr{
+    color: rgb(233, 233, 233);
+}
+
+.wrap_chip{
+    padding:4px;
+}

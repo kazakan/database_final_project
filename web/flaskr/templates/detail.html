@@ -14,34 +14,28 @@
             
     </div>
 
-    <h1>
-        {{movie.mv_name}}
-    </h1>
-    {% if movie.altname is not none and movie.altname | length > 0 %}
-
-    <h2>
-        {{movie.altname}}
-    </h2>
-    {% endif %}
-
-
     <div class="twocolgrid card_static">
-        <h3>
-            Short Info
-        </h3>
-    
-        <div></div> <!--empty cell 2 column grid-->
     
         <img src="{{ movie.poster_url }}" alt="" width="180" height="270" class="poster"
             onerror="this.onerror=null; this.src='https://ssl.pstatic.net/static/movie/2012/06/dft_img203x290.png'">
     
     
         <div class="movie_short_info_ex_container">
+            <h2>
+                {{movie.mv_name}}
+            </h2>
+            {% if movie.altname is not none and movie.altname | length > 0 %}
+        
+            <h3>
+                {{movie.altname}}
+            </h3>
+            {% endif %}
+            
             {% if directors | length > 0 %}
-            <div>
+            <div class="wrap_chip">
                 감독 :
                 {% for dir in directors %}
-                <span style="background:yellow">
+                <span class="chip">
                     {{ dir.dr_name }}
                 </span>
                 &nbsp;
@@ -50,10 +44,10 @@
             {% endif %}
     
             {% if actors | length > 0 %}
-            <div>
+            <div class="wrap_chip">
                 출연 :
                 {% for act in actors %}
-                <span style="background:gray">
+                <span class="chip">
                     {{ act.ac_name }}
                 </span>
                 &nbsp;
@@ -62,10 +56,10 @@
             {% endif %}
     
             {% if genres | length > 0 %}
-            <div>
+            <div class="wrap_chip">
                 장르 :
                 {% for gen in genres %}
-                <span style="background:aquamarine">
+                <span class="chip">
                     {{ gen.genre }}
                 </span>
                 &nbsp;
@@ -74,10 +68,10 @@
             {% endif %}
     
             {% if countries | length > 0 %}
-            <div>
+            <div class="wrap_chip">
                 국가 :
                 {% for con in countries %}
-                <span style="background:aquamarine">
+                <span class="chip">
                     {{ con.country }}
                 </span>
                 &nbsp;
@@ -86,13 +80,26 @@
             {% endif %}
 
             {% if movie.mv_year is not none %}
-            <div>
+            <div class="wrap_chip">
                 제작연도 :
-                <span style="background:aquamarine">
+                <span class="chip">
                     {{ movie.mv_year }}
                 </span>
             </div>
             {% endif %}
+
+            {% if grades | length > 0 %}
+            <div class="wrap_chip">
+                등급 :
+                {% for grade in grades %}
+                <span class="chip">
+                    {{ grade.grade }}
+                </span>
+                &nbsp;
+                {% endfor %}
+            </div>
+            {% endif %}
+
         </div>
     
     

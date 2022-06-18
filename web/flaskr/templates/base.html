@@ -17,39 +17,46 @@
         </h3>
     </div>
 
-    <form action="/" method="post">
+
+    <form action="/" method="post" id="formarea" class="card_static">
         검색어 : <input type="text" name="query" required> 
         <input type="submit" value="검색">
-        <br>
+        <hr>
         <label><input type="radio" name="searchby" value="mvname" checked> 영화제목</label>
         <label><input type="radio" name="searchby" value="drname"> 감독 이름</label>
         <label><input type="radio" name="searchby" value="acname"> 배우 이름</label>
-        <br>
-        <label><input type="number" name="year" min="1895" max="2030"> 연도 검색 </label>
-        <br>
+        <hr>
         <label><input type="radio" name="orderby" value="name">이름순</label>
         <label><input type="radio" name="orderby" value="year">연도순</label>
         <label><input type="radio" name="orderby" value="rating">평점순</label>
         <label><input type="radio" name="orderby" value="watched" checked>평가 많은순</label>
-        <br>
 
+        <div class="behidden">
+        <hr>
+        <p>제작연도</p><input type="number" name="year" min="1895" max="2030">
+        <hr>
+
+        <p>장르</p>
         <label><input type="radio" name="genrefilter" value="noapply" checked>없음</label>
         {% for genre in all_genre %}
         <label><input type="radio" name="genrefilter" value="{{genre}}">{{genre}}</label>
         {% endfor %}
-        <br>
-
+        <hr>
+        
+        <p>국가</p>
         <label><input type="radio" name="countryfilter" value="noapply" checked>없음</label>
         {% for ctr in all_country %}
         <label><input type="radio" name="countryfilter" value="{{ctr}}">{{ctr}}</label>
         {% endfor %}
-        <br>
+        <hr>
 
+        <p>평가등급</p>
         <label><input type="radio" name="gradefilter" value="noapply" checked>없음</label>
         {% for grade in all_grade %}
         <label><input type="radio" name="gradefilter" value="{{grade}}">{{grade}}</label>
         {% endfor %}
         <br>
+        </div>
 
     </form>
 
@@ -61,10 +68,11 @@
     
             <div class="movie_short_info_ex_container">
                 <div>
-                    {{ movie.mv_name }}
+                    <h2>{{ movie.mv_name }}
                     {% if movie.altname is not none and movie.altname | length > 0 %}
                     ({{movie.altname}})
                     {% endif %}
+                    </h2>
                 </div>
     
                 <div class="point">
@@ -104,6 +112,12 @@
                     출연 : {{movie.actors}}
                 </div>
                 {% endif %}
+
+                <div>
+                    {% if movie.grade is not none and movie.grade | length > 0 %}
+                    {{ movie.grade }}
+                    {% endif %}
+                </div>
 
                 <a href="/detail?mvcode={{ movie.mv_code }}">자세히</a>
             </div>
