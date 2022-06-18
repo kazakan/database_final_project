@@ -31,9 +31,9 @@ def index():
             
         is_where_in = False
         if searchby == "drname":
-            sql = f"select m.* from movie m join (select distinct mv_code from who_directed wd join( select * from director where dr_name like '{query}%') t using(dr_code)) aaa using(mv_code)"
+            sql = f"select m.* from movie m join (select distinct mv_code from who_directed wd join( select * from director where dr_name = '{query}') t using(dr_code)) aaa using(mv_code)"
         elif searchby == "acname":
-            sql = f"select m.* from movie m join (select distinct mv_code from who_acted wd join( select * from actor where ac_name like '{query}%') t using(ac_code)) aaa using(mv_code)"
+            sql = f"select m.* from movie m join (select distinct mv_code from who_acted wd join( select * from actor where ac_name = '{query}') t using(ac_code)) aaa using(mv_code)"
         else:
             sql = f"SELECT * FROM movie WHERE mv_name like '%{query}%'"
             is_where_in = True
