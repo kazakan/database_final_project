@@ -100,7 +100,7 @@ def index():
 
         # get countries
         for idx, c in enumerate(mv_codes):
-            cur.execute(f"SELECT country FROM db_final.where_made WHERE mv_code=%s;",c)
+            cur.execute(f"SELECT country FROM where_made WHERE mv_code=%s;",c)
             res = cur.fetchall()
             if len(res) :
                 country_short = ','.join([ c['country'] for c in res])
@@ -156,7 +156,7 @@ def detail():
     genres = cur.fetchall()
 
     # country
-    cur.execute("SELECT country FROM db_final.where_made WHERE mv_code=%s",mvcode)
+    cur.execute("SELECT country FROM where_made WHERE mv_code=%s",mvcode)
     countries = cur.fetchall()
 
     # reply
