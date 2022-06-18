@@ -22,9 +22,43 @@ def index():
     if request.method == "GET":
         return render_template("base.html", movie_list=movieList,all_country=all_country)
     elif request.method == "POST":
-        cur = db.cursor(pymysql.cursors.DictCursor)
+        # get constraints
         query = request.form.get('query')
-        cur.execute(f"SELECT * FROM movie WHERE mv_name like '%{query}%'")
+        searchby = request.form.get('searchby')
+        orderby = request.form.get('orderby')
+        countryfilter = request.form.get('countryfilter')
+        yearfilter = request.form.get('year')
+            
+        is_where_in = False
+        if searchby == "drname":
+            sql = f"select m.* from movie m join (select distinct mv_code from who_directed wd join( select * from director where dr_name like '{query}%') t using(dr_code)) aaa using(mv_code)"
+        elif searchby == "acname":
+            sql = f"select m.* from movie m join (select distinct mv_code from who_acted wd join( select * from actor where ac_name like '{query}%') t using(ac_code)) aaa using(mv_code)"
+        else:
+            sql = f"SELECT * FROM movie WHERE mv_name like '%{query}%'"
+            is_where_in = True
+
+        if yearfilter != "":
+            cond = f" mv_year={yearfilter}"
+            if not is_where_in : sql += f" where "
+            else : sql += " and "
+            sql += cond
+
+        if countryfilter != "noapply":
+            sql = "select m.* from ("+sql+f") m join (select mv_code from where_made where country='{countryfilter}') wm using (mv_code)"
+
+        if orderby == "name":
+            sql += " order by mv_name "
+        elif orderby == "year":
+            sql += " order by mv_year desc"
+        elif orderby == "rating":
+            sql += " order by netizen_rating desc"
+        elif orderby == "watched":
+            sql += " order by watched_rating_num desc"
+
+        cur = db.cursor(pymysql.cursors.DictCursor)
+        print(sql)
+        cur.execute(sql)
         movieList = cur.fetchall()
         
         # get directors
