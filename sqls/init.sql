@@ -1,3 +1,6 @@
+CREATE DATABASE moviedb;
+USE moviedb;
+
 SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS movie;
 SET foreign_key_checks = 1;

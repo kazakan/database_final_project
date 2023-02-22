@@ -1,3 +1,4 @@
+use moviedb;
 
 create index mv_year_idx on movie(mv_year) ;
 create index mv_net_rating on movie(netizen_rating) ;
