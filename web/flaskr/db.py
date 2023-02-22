@@ -1,7 +1,6 @@
 import dotenv
 import pymysql
 import os
-import pymysql
 
 def init_db():
     dotenv.load_dotenv()
