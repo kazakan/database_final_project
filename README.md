@@ -49,7 +49,7 @@ Following picture is EER diagram of moviedb database.
 
 ## Web interface
 
-Simple web interface to search movie from db in included in this project.
+Simple web interface to search movie from db is included in this project.
 
 - Search page
 
